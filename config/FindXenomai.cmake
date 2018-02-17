@@ -68,5 +68,5 @@ else( XENOMAI_LIBRARY )
   set(XENOMAI_PROCESS_LIBS XENOMAI_NATIVE_LIBRARY)
 endif( XENOMAI_LIBRARY )
 
-
+message(STATUS "Found xenomai 3.")
 libfind_process(XENOMAI)
