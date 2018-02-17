@@ -36,6 +36,7 @@
  ***************************************************************************/
 
 
+#ifdef ORO_RTT_USE_DEPRECATED
 #include "IRQActivity.hpp"
 #include "../ExecutionEngine.hpp"
 #include "../base/TaskCore.hpp"
@@ -156,3 +157,4 @@ void IRQActivity::step()
 
 #endif // OS is xenomai
 
+#endif // Use of deprecated interrupt management of Xenomai 2
