@@ -30,10 +30,10 @@ if ( XenomaiPosix_FIND_REQUIRED )
 endif()
 
 # Header files to find
-set(header_NAME    pthread.h)
+set(header_NAME    cobalt/pthread.h)
 
 # Libraries to find
-set(XENOMAI_POSIX_NAME   pthread_rt)
+set(XENOMAI_POSIX_NAME   cobalt)
 
 # Find headers and libraries
 if(XENOMAI_ROOT_DIR)
@@ -51,8 +51,8 @@ endif()
 if( XENOMAI_POSIX_LIBRARY AND XENOMAI_POSIX_INCLUDE_DIR AND NOT XENOMAI_XENO_CONFIG )
   message(SEND_ERROR "Your Xenomai installation is broken: I can not determine Xenomai POSIX cflags/ldflags without xeno-config.")
 else()
-  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=posix --ldflags OUTPUT_VARIABLE XENOMAI_POSIX_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=posix --cflags OUTPUT_VARIABLE XENOMAI_POSIX_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --compat --skin=cobalt --ldflags OUTPUT_VARIABLE XENOMAI_POSIX_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --compat --skin=cobalt --cflags OUTPUT_VARIABLE XENOMAI_POSIX_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
