@@ -163,9 +163,9 @@ static inline TICK_TIME timespec2ticks(const TIME_SPEC* ts)
 #define CHK_XENO_PTR( a )
 #endif
 
-static inline NANO_TIME rtos_get_time_ns(void) { return rrt_timer_read(); }
+static inline NANO_TIME rtos_get_time_ns(void) { return rt_timer_read(); }
 
-static inline TICK_TIME rtos_get_time_ticks(void) { return rrt_timer_read(); }
+static inline TICK_TIME rtos_get_time_ticks(void) { return rt_timer_read(); }
 
 static inline TICK_TIME ticksPerSec(void) { return (TICK_TIME) (1000000000) ; }
 
