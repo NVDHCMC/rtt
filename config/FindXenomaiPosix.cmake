@@ -51,7 +51,7 @@ endif()
 if( XENOMAI_POSIX_LIBRARY AND XENOMAI_POSIX_INCLUDE_DIR AND NOT XENOMAI_XENO_CONFIG )
   message(SEND_ERROR "Your Xenomai installation is broken: I can not determine Xenomai POSIX cflags/ldflags without xeno-config.")
 else()
-  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --compat --skin=cobalt --ldflags OUTPUT_VARIABLE XENOMAI_POSIX_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --compat --skin=cobalt --ldflags --auto-init-solib OUTPUT_VARIABLE XENOMAI_POSIX_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
   execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --compat --skin=cobalt --cflags OUTPUT_VARIABLE XENOMAI_POSIX_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
