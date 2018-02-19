@@ -54,7 +54,7 @@ endif()
 if( XENOMAI_LIBRARY AND XENOMAI_INCLUDE_DIR AND NOT XENOMAI_XENO_CONFIG )
   message(SEND_ERROR "Your Xenomai installation is broken: I can not determine Xenomai Native cflags/ldflags without xeno-config.")
 else()
-  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=alchemy --ldflags OUTPUT_VARIABLE XENOMAI_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=alchemy --ldflags --auto-init-solib OUTPUT_VARIABLE XENOMAI_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
   execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=alchemy --cflags OUTPUT_VARIABLE XENOMAI_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
