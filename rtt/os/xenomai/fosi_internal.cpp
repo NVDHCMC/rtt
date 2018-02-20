@@ -47,6 +47,7 @@
 #include "../../Logger.hpp"
 #include <signal.h>
 #include <execinfo.h>
+#include <sched.h>
 
 extern "C"
 void warn_upon_switch(int sig __attribute__((unused)))
@@ -214,7 +215,7 @@ namespace RTT
             task->sched_type = sched_type; // User requested scheduler.
             int rv;
 
-            unsigned int aff = 0;
+            cpu_set_t aff;
             if ( cpu_affinity != 0 ) {
                 // calculate affinity:
                 for(unsigned i = 0; i < 8*sizeof(cpu_affinity); i++) {
@@ -225,7 +226,8 @@ namespace RTT
                             if ( cpu_affinity != all_cpus ) // suppress this warning when ~0 is provided
                                 log(Warning) << "rtos_task_create: ignoring cpu_affinity for "<< name << " on CPU " << i << " since it's larger than RTHAL_NR_CPUS - 1 (="<< 7 <<")"<<endlog();
                         } else {
-                            aff |= T_CPU(i); 
+                            CPU_ZERO(&aff);
+                            CPU_SET(i, &aff);
                         }
                     }
                 }
@@ -238,7 +240,7 @@ namespace RTT
 
             // task, name, stack, priority, mode, fun, arg
             // UGLY, how can I check in Xenomai that a name is in use before calling rt_task_spawn ???
-            rv = rt_task_spawn(&(task->xenotask), name, stack_size, priority, T_JOINABLE | (aff & T_CPUMASK), rtos_xeno_thread_wrapper, xcookie);
+            rv = rt_task_spawn(&(task->xenotask), name, stack_size, priority, T_JOINABLE, rtos_xeno_thread_wrapper, xcookie);
             if ( rv == -EEXIST ) {
                 free( task->name );
                 task->name = strncpy( (char*)malloc( (strlen(name)+2)*sizeof(char) ), name, strlen(name)+1 );
@@ -246,16 +248,24 @@ namespace RTT
                 task->name[ strlen(name)+1 ] = 0;
                 while ( rv == -EEXIST &&  task->name[ strlen(name) ] != '9') {
                     task->name[ strlen(name) ] += 1;
-                    rv = rt_task_spawn(&(task->xenotask), task->name, stack_size, priority, T_JOINABLE | (aff & T_CPUMASK), rtos_xeno_thread_wrapper, xcookie);
+                    rv = rt_task_spawn(&(task->xenotask), task->name, stack_size, priority, T_JOINABLE, rtos_xeno_thread_wrapper, xcookie);
                 }
             }
             if ( rv == -EEXIST ) {
                 log(Warning) << name << ": an object with that name is already existing in Xenomai." << endlog();
-                rv = rt_task_spawn(&(task->xenotask), 0, stack_size, priority, T_JOINABLE | (aff & T_CPUMASK), rtos_xeno_thread_wrapper, xcookie);
+                rv = rt_task_spawn(&(task->xenotask), 0, stack_size, priority, T_JOINABLE, rtos_xeno_thread_wrapper, xcookie);
             }
             if ( rv != 0) {
                 log(Error) << name << " : CANNOT INIT Xeno TASK " << task->name <<" error code: "<< rv << endlog();
                 return rv;
+            }
+            else {
+                rv = rt_task_set_affinity(&(task->xenotask), &aff);
+                if (rv) {
+                    log(Error) << name << " : FAILED TO SET CPU AFFINITY FOR " << task->name <<" error code: "<< rv << endlog();
+                    return rv;
+                }
+
             }
 
             rt_task_yield();
@@ -442,7 +452,7 @@ namespace RTT
             RT_TASK* tt = mytask->xenoptr;
             if ( tt )
                 if ( rt_task_inquire ( tt, &info) == 0 )
-                    return info.bprio;
+                    return info.prio;
             return -1;
         }
 
