@@ -30,11 +30,11 @@ if ( Xenomai_FIND_REQUIRED )
 endif()
 
 # Header files to find
-set(header_NAME    native/task.h)
+set(header_NAME    alchemy/task.h)
 
 # Libraries to find
 set(XENOMAI_NAME   xenomai)
-set(XENOMAI_NATIVE_NAME   native)
+set(XENOMAI_NATIVE_NAME   alchemy)
 
 # Find headers and libraries
 if(XENOMAI_ROOT_DIR)
@@ -54,8 +54,8 @@ endif()
 if( XENOMAI_LIBRARY AND XENOMAI_INCLUDE_DIR AND NOT XENOMAI_XENO_CONFIG )
   message(SEND_ERROR "Your Xenomai installation is broken: I can not determine Xenomai Native cflags/ldflags without xeno-config.")
 else()
-  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=native --ldflags OUTPUT_VARIABLE XENOMAI_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=native --cflags OUTPUT_VARIABLE XENOMAI_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=alchemy --ldflags --auto-init-solib OUTPUT_VARIABLE XENOMAI_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=alchemy --cflags OUTPUT_VARIABLE XENOMAI_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
 
@@ -68,5 +68,5 @@ else( XENOMAI_LIBRARY )
   set(XENOMAI_PROCESS_LIBS XENOMAI_NATIVE_LIBRARY)
 endif( XENOMAI_LIBRARY )
 
-
+message(STATUS "Found xenomai 3.")
 libfind_process(XENOMAI)

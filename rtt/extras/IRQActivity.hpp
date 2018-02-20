@@ -43,6 +43,7 @@
 #include "../rtt-config.h"
 
 #ifdef OROPKG_OS_XENOMAI
+#ifdef ORO_RTT_USE_DEPRECATED
 #include <native/intr.h>
 #else
 // Provide a dump RT_INTR type. start() always returns false on non-Xenomai
@@ -123,3 +124,4 @@ namespace RTT { namespace extras {
 }}
 
 #endif
+#endif // Use of deprecated interrupt management of Xenomai 2
